@@ -28,9 +28,10 @@ void handle_create_grup(Client *sd) {
     }
     sprintf(res.res, "Sesiunea merge");
     res.status = 200;
+    sprintf(res.args, "%s %s", r_print, r_end_wait);
     SSL_write(sd->ssl, &res, sizeof(StringRes));
     char grupName[64];
-    int rs = read(sd->socket, grupName, sizeof(grupName));
+    int rs = SSL_read(sd->ssl, grupName, sizeof(grupName));
     grupName[rs] = '\0';
     if(verifyConn(sd, rs)) return;
     int cStatus = createGrup(grupName, user.id);
@@ -97,7 +98,7 @@ void handle_see_my_grups(Client *sd) {
     }
     StringRes finn;
     finn.status = 303;
-    sprintf(finn.args, "%s", r_end_wait);
+    sprintf(finn.args, "%s %s", r_print, r_end_wait);
     strcpy(finn.res, "FINAL");
     SSL_write(sd->ssl, &finn, sizeof(StringRes));
 }

@@ -31,7 +31,7 @@ void handle_add_new_meber(Client *sd) {
     }
     int permissions = p_init+p_read+p_write;
     char sTarget[16];
-    int rs = read(sd->socket, sTarget, sizeof(sTarget));
+    int rs = SSL_read(sd->ssl, sTarget, sizeof(sTarget));
     sTarget[rs] = '\0';
     int status = addMemberInGrup(grup.public_id, user.id, ldtoa(sTarget), permissions);
     if(verifyConn(sd, rs)) return;
@@ -93,7 +93,7 @@ void handle_write_message(Client *sd, Client sds[MAX_CLIENTS]) {
     int rs = SSL_read(sd->ssl, message, sizeof(message));
     if(verifyConn(sd, rs)) return;
     message[rs] = '\0';
-    if(!strcmp(message, "")) return;
+    if(strlen(message) <= 1) return;
     if(message[strlen(message)-1] == '\n') message[strlen(message)-1] = '\0';
     int status = createMessage(message, grup.id, user.id);
     if(status) {
