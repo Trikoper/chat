@@ -9,6 +9,7 @@ long int ldtoa(char *str) {
 }
 
 int verifyConnection(int rs, int cl, SSL *ssl) {
+    printf("%d", rs);
     if(rs <= 0) {
         printf("Client deconectat, socket: %d\n", cl);
         close(cl);

@@ -102,6 +102,7 @@ void *receive_messages(void *socket) {
         while(arg) {
             if(!strcmp(arg, r_end_wait)) {
                 processIn = 0; break;
+                sprintf(res.args, "%s %s", r_print, r_end_wait);
             }
             for(int i=0; res_handler[i].response != NULL; i++) {
                 if(!strcmp(arg, res_handler[i].response)) {
@@ -114,7 +115,16 @@ void *receive_messages(void *socket) {
     }
 }
 
+void shortMsgHandle(char *msg) {
+    char *token = getSessionToken();
+    char *chatToken = getChatSessionToken();
+    SSL_write(ssl, token, 16);
+    SSL_write(ssl, chatToken, 16);
+    SSL_write(ssl, msg, 1024);
+}
+
 int main() {
+    printf("%d\n", processIn);
     init_openssl();
     ctx = create_context();
 
@@ -153,8 +163,14 @@ int main() {
     // Trimitem mesaje către server
     while (1) {
         if(processIn == 2) {
-            SSL_write(ssl, a_write_message, sizeof(a_write_message));
-            ma_write_message(client_socket, ssl, &processIn);
+            char message[1024];
+            fgets(message, 1024, stdin);
+            if(!strcmp(message, "exit")) {
+                processIn = 0;
+            } else {
+                SSL_write(ssl, a_write_message, sizeof(a_write_message));
+                shortMsgHandle(message);
+            }
         }
         if(!processIn) {
             char buffer[1024];

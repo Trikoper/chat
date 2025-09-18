@@ -20,14 +20,10 @@ void ma_logoff(int cl, SSL *ssl, int *prc) {
 
 void ma_create_grup(int cl, SSL *ssl, int *prc) {
     char *token = getSessionToken();
-    StringRes res;
     SSL_write(ssl, token, 16);
-    if(verifyConnection(SSL_read(ssl, &res, sizeof(StringRes)), cl, ssl)) return;
-    if(res.status == 200) {
-        char grupName[64];
-        printf("Grup name: "); scanf("%s", grupName);
-        SSL_write(ssl, grupName, sizeof(grupName));
-    }
+    char grupName[64];
+    printf("Grup name: "); scanf("%s", grupName);
+    SSL_write(ssl, grupName, sizeof(grupName));
     return;
 }
 
