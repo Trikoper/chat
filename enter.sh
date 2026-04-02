@@ -5,4 +5,5 @@ cd client
 clear
 make clear
 make create
-./client.sh
+cd bin
+./main.exe

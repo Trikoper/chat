@@ -17,4 +17,5 @@ fi
 
 make clear
 make create
-./server.sh
+cd bin
+./main.exe
